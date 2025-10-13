@@ -1,22 +1,67 @@
 [
     {
         "id": 1,
-        "name": "Alice"
+        "name": "Alice",
+        "purchased_products": [
+            3,
+            5
+        ]
     },
     {
         "id": 2,
-        "name": "Bob"
+        "name": "Bob",
+        "purchased_products": [
+            3,
+            5
+        ]
     },
     {
         "id": 3,
-        "name": "Lalo"
+        "name": "Lalo",
+        "purchased_products": [
+            3,
+            5,
+            4
+        ]
     },
     {
         "id": 4,
-        "name": "Carlos"
+        "name": "Carlos",
+        "purchased_products": [
+            3,
+            5
+        ]
     },
     {
         "id": 5,
-        "name": "Carlos"
+        "name": "Carlos",
+        "purchased_products": [
+            3,
+            5
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Carlos",
+        "purchased_products": [
+            3,
+            5
+        ]
+    },
+    {
+        "id": 7,
+        "name": "Carlos",
+        "purchased_products": [
+            3,
+            5
+        ]
+    },
+    {
+        "id": 8,
+        "name": "Carlos",
+        "purchased_products": [
+            3,
+            5
+        ]
     }
 ]

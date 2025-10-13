@@ -10,14 +10,19 @@ Descripción: Frontend del microservicio.
 ============================================================
 -->
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
     <title>Datos Combinados</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background: #f4f6f8;
             padding: 2rem;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
         }
         h2 {
             color: #333;
@@ -43,27 +48,30 @@ Descripción: Frontend del microservicio.
 
     <div class="section">
         <h2>Usuarios</h2>
-        {% for user in users %}
-            <div class="item">
-                <strong>ID:</strong> {{ user.id }} <br>
-                <strong>Nombre:</strong> {{ user.name }}
-            </div>
+        {% if users %}
+            {% for user in users %}
+                <div class="item">
+                    <strong>ID:</strong> {{ user.id }} <br>
+                    <strong>Nombre:</strong> {{ user.name }}
+                </div>
+            {% endfor %}
         {% else %}
             <p>No hay usuarios.</p>
-        {% endfor %}
+        {% endif %}
     </div>
 
     <div class="section">
         <h2>Productos</h2>
-        {% for product in products %}
-            <div class="item">
-                <strong>ID:</strong> {{ product.id }} <br>
-                <strong>Nombre:</strong> {{ product.name }}
-            </div>
+        {% if products %}
+            {% for product in products %}
+                <div class="item">
+                    <strong>ID:</strong> {{ product.id }} <br>
+                    <strong>Nombre:</strong> {{ product.name }}
+                </div>
+            {% endfor %}
         {% else %}
             <p>No hay productos.</p>
-        {% endfor %}
+        {% endif %}
     </div>
-
 </body>
 </html>

@@ -20,5 +20,13 @@ def get_users():
     users = load_item(USERS_FILE)
     return jsonify(users)
 
+@app.route('/api/users/<int:user_id>', methods=['GET'])
+def get_user_by_id(user_id):
+    users = load_item(USERS_FILE)
+    user = next((u for u in users if u['id'] == user_id), None)
+    if user:
+        return jsonify(user)
+    return jsonify({'error': 'User not found'}), 404
+
 if __name__ == '__main__':
     app.run(port=get_host(USER_API_URL))

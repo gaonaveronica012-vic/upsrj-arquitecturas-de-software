@@ -9,10 +9,10 @@
 # ============================================================
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 import requests
 from common.utils import get_host
-from common.vars import GATEWAY_SERVICE_URL, USER_API_URL, PRODUCT_API_URL
+from common.vars import GATEWAY_SERVICE_URL, USER_API_URL, PRODUCT_API_URL, PURCHASE_API_URL
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 app = Flask(__name__, template_folder=template_dir)
@@ -34,6 +34,10 @@ def get_all():
 
     except requests.exceptions.RequestException as e:
         return render_template("error.html", error=str(e)), 500
+
+@app.route('/purchases')
+def redirect_purchases():
+   return redirect("http://localhost:5006/purchases")
 
 if __name__ == '__main__':
     app.run(port=get_host(GATEWAY_SERVICE_URL))

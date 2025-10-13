@@ -8,7 +8,6 @@
 # Archivo: stop-all.sh
 # Descripción: Detiene todos los microservicios ejecutados con run-all.sh
 # ============================================================
-
 echo "Deteniendo microservicios..."
 
 # Lista de archivos principales de cada microservicio
@@ -17,8 +16,8 @@ FILES=(
   "users_service/app.py"
   "products_service/api.py"
   "products_service/app.py"
-  #"purchases_service/api.py"
-  #"purchases_service/app.py"
+  "purchases_service/api.py"
+  "purchases_service/app.py"
   "gateway/api.py"
   "gateway/app.py"
 )
