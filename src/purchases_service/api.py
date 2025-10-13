@@ -25,7 +25,7 @@ def product_exists(product_id):
         return False
 
 # Registrar nueva compra
-@app.route('/purchases', methods=['POST'])
+@app.route('/api/purchases', methods=['POST'])
 def create_purchase():
     data = request.get_json()
 
@@ -49,30 +49,3 @@ def create_purchase():
         'id': new_id,
         'user_id': user_id,
         'product_id': product_id,
-        'timestamp': timestamp
-    }
-
-    purchases.append(new_purchase)
-    save_item(PURCHASES_FILE, purchases)
-
-    # Actualizar purchased_products en users.json
-    users = load_item(USERS_FILE)
-    for user in users:
-        if user['id'] == user_id:
-            if product_id not in user['purchased_products']:
-                user['purchased_products'].append(product_id)
-            break
-    save_item(USERS_FILE, users)
-
-    return jsonify(new_purchase), 201  # 201 creado correctamente
-
-# Listar compras por usuario
-@app.route('/purchases/<int:user_id>', methods=['GET'])
-def get_purchases_by_user(user_id):
-    purchases = load_item(PURCHASES_FILE)
-    user_purchases = [p for p in purchases if p['user_id'] == user_id]
-    # Devuelve 200 incluso si la lista está vacía
-    return jsonify(user_purchases), 200
-
-if __name__ == '__main__':
-    app.run(port=get_host(PURCHASE_API_URL))
