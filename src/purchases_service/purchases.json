@@ -4,5 +4,11 @@
         "user_id": 3,
         "product_id": 4,
         "timestamp": "2025-10-13T04:33:31.497388"
+    },
+    {
+        "id": 2,
+        "user_id": 1,
+        "product_id": 3,
+        "timestamp": "2025-10-13T05:33:30.693463"
     }
 ]

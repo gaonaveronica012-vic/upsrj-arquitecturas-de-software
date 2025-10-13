@@ -33,8 +33,8 @@ def create_purchase():
     if not data or 'user_id' not in data or 'product_id' not in data:
         return jsonify({'error': 'user_id and product_id are required'}), 400
 
-    user_id = data.get('user_id')
-    product_id = data.get('product_id')
+    user_id = data['user_id']
+    product_id = data['product_id']
 
     if not user_exists(user_id):
         return jsonify({'error': 'User does not exist'}), 400
@@ -49,4 +49,32 @@ def create_purchase():
         'id': new_id,
         'user_id': user_id,
         'product_id': product_id,
+        'timestamp': timestamp
     }
+
+    purchases.append(new_purchase)
+    save_item(PURCHASES_FILE, purchases)
+
+    # Actualizar purchased_products en users.json
+    users = load_item(USERS_FILE)
+    for user in users:
+        if user['id'] == user_id:
+            if 'purchased_products' not in user:
+                user['purchased_products'] = []
+            if product_id not in user['purchased_products']:
+                user['purchased_products'].append(product_id)
+            break
+    save_item(USERS_FILE, users)
+
+    return jsonify(new_purchase), 201
+
+# Listar compras por usuario
+@app.route('/api/purchases/<int:user_id>', methods=['GET'])
+def get_purchases_by_user(user_id):
+    purchases = load_item(PURCHASES_FILE)
+    user_purchases = [p for p in purchases if p['user_id'] == user_id]
+    return jsonify(user_purchases), 200
+
+if __name__ == '__main__':
+    # Para probar localmente, usa el puerto 5007 directamente
+    app.run(port=5007)
