@@ -26,9 +26,13 @@ def product_exists(product_id):
 
 # Registrar nueva compra
 @app.route('/purchases', methods=['POST'])
-
 def create_purchase():
     data = request.get_json()
+
+    # Validar que lleguen ambos campos
+    if not data or 'user_id' not in data or 'product_id' not in data:
+        return jsonify({'error': 'user_id and product_id are required'}), 400
+
     user_id = data.get('user_id')
     product_id = data.get('product_id')
 
@@ -60,16 +64,15 @@ def create_purchase():
             break
     save_item(USERS_FILE, users)
 
-    return jsonify(new_purchase), 201
+    return jsonify(new_purchase), 201  # 201 creado correctamente
 
 # Listar compras por usuario
-
 @app.route('/purchases/<int:user_id>', methods=['GET'])
-
 def get_purchases_by_user(user_id):
     purchases = load_item(PURCHASES_FILE)
     user_purchases = [p for p in purchases if p['user_id'] == user_id]
-    return jsonify(user_purchases)
+    # Devuelve 200 incluso si la lista está vacía
+    return jsonify(user_purchases), 200
 
 if __name__ == '__main__':
     app.run(port=get_host(PURCHASE_API_URL))
