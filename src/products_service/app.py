@@ -1,42 +1,50 @@
-# ============================================================
-# Politécnica de Santa Rosa
-#
-# Materia: Arquitecturas de Software
-# Profesor: Jesús Salvador López Ortega
-# Grupo: ISW28
-# Archivo: app.py
-# Descripción: Backend del microservicio
+# Archivo: app.py (products_service)
+# Descripción: API REST para gestión de productos
 # ============================================================
 import sys, os
+from flask import Flask, jsonify, request
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from flask import Flask, request, render_template, redirect, url_for
 from common.utils import load_item, save_item, get_host
-from common.vars import PRODUCTS_FILE, PRODUCT_SERVICE_URL
+from common.vars import PRODUCTS_FILE, PRODUCT_API_URL
 
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-app = Flask(__name__, template_folder=template_dir)
+app = Flask(__name__)
 
+# ============================================================
+# GET /products -> devolver todos los productos
+# ============================================================
 @app.route('/products', methods=['GET'])
 def get_products():
-    products = load_item(PRODUCTS_FILE)
-    return render_template("products.html", products=products)
+    products = load_item(PRODUCTS_FILE) or []
+    return jsonify({"Productos": products}), 200  # clave "Productos" para test
 
-@app.route('/products/create', methods=['GET'])
-def create_product_form():
-    return render_template("create_product.html")
-
+# ============================================================
+# POST /products -> crear un producto nuevo
+# ============================================================
 @app.route('/products', methods=['POST'])
 def create_product():
-    name = request.form.get("name")
-    if not name:
-        return "El nombre del producto es requerido", 400
+    data = request.get_json(silent=True) or request.form
+    name = data.get("name")
+    price = data.get("price")
 
-    products = load_item(PRODUCTS_FILE)
-    product = {'id': len(products) + 1, 'name': name}
-    products.append(product)
+    if not name or not price:
+        return jsonify({"error": "name y price requeridos"}), 400
+
+    try:
+        price = float(price)
+    except ValueError:
+        return jsonify({"error": "price debe ser un número"}), 400
+
+    products = load_item(PRODUCTS_FILE) or []
+    new_id = max([p['id'] for p in products], default=0) + 1
+    new_product = {"id": new_id, "name": name, "price": price}
+    products.append(new_product)
     save_item(PRODUCTS_FILE, products)
 
-    return redirect(url_for('get_products'))
+    return jsonify(new_product), 200
 
+# ============================================================
+# MAIN
+# ============================================================
 if __name__ == '__main__':
-    app.run(port=get_host(PRODUCT_SERVICE_URL))
+    app.run(port=get_host(PRODUCT_API_URL))
+

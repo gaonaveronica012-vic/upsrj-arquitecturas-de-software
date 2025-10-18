@@ -15,3 +15,4 @@ GATEWAY_API_URL = "http://localhost:5001"
 USER_API_URL = "http://localhost:5003"
 PRODUCT_API_URL = "http://localhost:5005"
 PURCHASE_API_URL = "http://localhost:5007"
+

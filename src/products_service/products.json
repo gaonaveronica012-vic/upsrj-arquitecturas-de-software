@@ -1,30 +1,32 @@
 [
     {
         "id": 1,
-        "name": "Apple"
+        "name": "Apple",
+        "price": 1.0
     },
     {
         "id": 2,
-        "name": "Banana"
+        "name": "Banana",
+        "price": 2.0
     },
     {
         "id": 3,
-        "name": "Laptop"
+        "name": "Laptop",
+        "price": 1200.0
     },
     {
         "id": 4,
-        "name": "Laptop"
+        "name": "Tablet",
+        "price": 800.0
     },
     {
         "id": 5,
-        "name": "Laptop"
+        "name": "Mouse",
+        "price": 25.0
     },
     {
         "id": 6,
-        "name": "Laptop"
-    },
-    {
-        "id": 7,
-        "name": "Laptop"
+        "name": "Laptop",
+        "price": 1200.0
     }
 ]

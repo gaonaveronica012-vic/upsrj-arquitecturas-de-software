@@ -37,26 +37,46 @@ Descripción: Frontend del microservicio.
             border-radius: 6px;
             margin-top: 1rem;
         }
-        .link {
-            margin-bottom: 1rem;
+        form {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
-        .link a {
-            text-decoration: none;
-            background-color: #007BFF;
-            color: white;
+        input[type="text"] {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
             padding: 0.5rem 1rem;
             border-radius: 6px;
+            border: none;
+            background-color: #28a745;
+            color: white;
             font-weight: bold;
+            cursor: pointer;
+            width: 150px;
+        }
+        input[type="submit"]:hover {
+            background-color: #218838;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="link">
-            <a href="/users/create">Agregar Nuevo Usuario</a>
-        </div>
         <h2>Usuarios</h2>
 
+        <!-- Formulario para crear usuario -->
+        <form method="POST" action="/users">
+            <label for="name">Nombre del Usuario:</label>
+            <input type="text" name="name" id="name" placeholder="Ingrese nombre" required>
+            <input type="submit" value="Agregar Usuario">
+        </form>
+
+        <!-- Listado de usuarios -->
         {% if users %}
             {% for user in users %}
                 <div class="user-card">
@@ -70,3 +90,4 @@ Descripción: Frontend del microservicio.
     </div>
 </body>
 </html>
+

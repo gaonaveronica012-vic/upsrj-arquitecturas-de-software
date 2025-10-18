@@ -1,14 +1,26 @@
 [
     {
         "id": 1,
-        "user_id": 3,
-        "product_id": 4,
-        "timestamp": "2025-10-13T04:33:31.497388"
+        "user_id": 1,
+        "product_id": 3,
+        "timestamp": "2025-10-15T01:12:14.532459"
     },
     {
         "id": 2,
         "user_id": 1,
+        "product_id": 5,
+        "timestamp": "2025-10-15T19:06:15.742584"
+    },
+    {
+        "id": 3,
+        "user_id": 2,
         "product_id": 3,
-        "timestamp": "2025-10-13T05:33:30.693463"
+        "timestamp": "2025-10-15T19:07:47.722233"
+    },
+    {
+        "id": 4,
+        "user_id": 3,
+        "product_id": 4,
+        "timestamp": "2025-10-16T04:35:40.843136"
     }
 ]

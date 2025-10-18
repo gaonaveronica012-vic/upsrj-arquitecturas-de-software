@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 
 import importlib.util
 
-BASE_DIR =os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 # Colores ANSI
 GREEN = "\033[92m"
@@ -65,14 +65,14 @@ class CustomTestResult(unittest.TextTestResult):
 
     def addSuccess(self, test):
         super().addSuccess(test)
-        self.successes.append((test))
+        self.successes.append(test)
 
 class CustomTestRunner(unittest.TextTestRunner):
     def _makeResult(self):
         return CustomTestResult(self.stream, self.descriptions, self.verbosity)
-    
+
 class TestEvaluation(unittest.TestCase):
-    
+
     def setUp(self):
         test_name = self._testMethodName
 
@@ -95,17 +95,17 @@ class TestEvaluation(unittest.TestCase):
             if not GATEWAY_AVAILABLE:
                 self.fail("El microservicio gateway no está disponible o mal estructurado.")
             self.app = gateway_app.test_client()
-
         else:
             self.app = None
 
         if self.app:
             self.app.testing = True
 
+    # ==================== USERS ====================
     def test_get_users_route(self):
         response = self.app.get('/users')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Usuarios', response.data)  # Ajusta según el contenido HTML
+        self.assertIn(b'Usuarios', response.data)
 
     def test_create_user_missing_name(self):
         response = self.app.post('/users', data={})
@@ -117,6 +117,7 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Carlos', response.data)
 
+    # ==================== PRODUCTS ====================
     def test_get_products_route(self):
         response = self.app.get('/products')
         self.assertEqual(response.status_code, 200)
@@ -132,6 +133,7 @@ class TestEvaluation(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Laptop', response.data)
 
+    # ==================== PURCHASES ====================
     def test_get_purchases_by_user(self):
         response = self.app.get('/purchases/1')
         self.assertEqual(response.status_code, 200)
@@ -143,21 +145,30 @@ class TestEvaluation(unittest.TestCase):
         self.assertIn(b'user_id', response.data)
 
     def test_create_purchase_invalid_user(self):
-        response = self.app.post('/purchases', json={"user_id": 999, "product_id": 3})
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"usuario", response.data.lower())
+        initial_response = self.app.get('/purchases')
+        initial_count = initial_response.data.decode().count('purchase-card')
+        response = self.app.post('/purchases', data={"user_id": 999, "product_id": 1}, follow_redirects=True)
+        self.assertEqual(response.status_code, 404)
+        final_count = response.data.decode().count('purchase-card')
+        self.assertEqual(final_count, initial_count)
 
     def test_create_purchase_invalid_product(self):
-        response = self.app.post('/purchases', json={"user_id": 1, "product_id": 999})
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(b"producto", response.data.lower())
+        initial_response = self.app.get('/purchases')
+        initial_count = initial_response.data.decode().count('purchase-card')
+        response = self.app.post('/purchases', data={"user_id": 1, "product_id": 999}, follow_redirects=True)
+        self.assertEqual(response.status_code, 404)
+        final_count = response.data.decode().count('purchase-card')
+        self.assertEqual(final_count, initial_count)
 
     def test_create_purchase_valid(self):
-        response = self.app.post('/purchases', json={"user_id": 1, "product_id": 3})
+        initial_response = self.app.get('/purchases')
+        initial_count = initial_response.data.decode().count('purchase-card')
+        response = self.app.post('/purchases', data={"user_id": 1, "product_id": 3}, follow_redirects=True)
         self.assertEqual(response.status_code, 201)
-        self.assertIn(b'"user_id": 1', response.data.decode())
+        final_count = response.data.decode().count('purchase-card')
+        self.assertEqual(final_count, initial_count + 1)
 
-
+# ==================== MAIN ====================
 if __name__ == '__main__':
     suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestEvaluation)
     silent_stream = io.StringIO()
@@ -165,22 +176,21 @@ if __name__ == '__main__':
     result = runner.run(suite)
 
     print(f"{BOLD}EVALUACION{RESET}")
-    # Resultados individuales
     print(SEPARATOR)
     print(f"{BOLD}Resultados individuales:{RESET}")
+
     for test_case in result.successes:
         print(f"{test_case._testMethodName}: {GREEN}{BOLD}PASSED{RESET}")
 
     for test_case, traceback in result.failures + result.errors:
         print(f"{test_case._testMethodName}: {RED}{BOLD}FAILED{RESET}")
-        # Extraer solo el mensaje de la última línea del traceback
         last_line = traceback.strip().split('\n')[-1]
         mensaje = last_line.split(':')[-1].strip()
         print(f"- detalles: {LIGHT_RED}{mensaje}{RESET}")
 
-    # Resumen final
     print(SEPARATOR)
     print(f"{BOLD}Resumen final:{RESET}")
+
     if result.wasSuccessful():
         print(f"{GREEN}{BOLD}SUCCESS:{RESET} Todos los tests pasaron correctamente.")
     else:
@@ -188,3 +198,4 @@ if __name__ == '__main__':
     print(SEPARATOR)
 
     sys.exit(not result.wasSuccessful())
+

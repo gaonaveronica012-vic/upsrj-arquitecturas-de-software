@@ -5,28 +5,37 @@
 # Profesor: Jesús Salvador López Ortega
 # Grupo: ISW28
 # Archivo: api.py
-# Descripción: RESTful API de microservicio
+# Descripción: RESTful API de microservici
+# ============================================================
+# Archivo: api.py
+# Descripción: RESTful API del microservicio de usuarios
 # ============================================================
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from flask import Flask, jsonify
-from common.utils import load_item, get_host
+from flask import Flask, request, jsonify
+from common.utils import load_item, save_item, get_host
 from common.vars import USERS_FILE, USER_API_URL
 
 app = Flask(__name__)
 
 @app.route('/api/users', methods=['GET'])
-def get_users():
-    users = load_item(USERS_FILE)
-    return jsonify(users)
+def api_get_users():
+    users = load_item(USERS_FILE) or []
+    return jsonify({"Usuarios": users}), 200
 
-@app.route('/api/users/<int:user_id>', methods=['GET'])
-def get_user_by_id(user_id):
-    users = load_item(USERS_FILE)
-    user = next((u for u in users if u['id'] == user_id), None)
-    if user:
-        return jsonify(user)
-    return jsonify({'error': 'User not found'}), 404
+@app.route('/api/users', methods=['POST'])
+def api_create_user():
+    data = request.get_json()
+    if not data or not data.get("name"):
+        return jsonify({"error": "Nombre requerido"}), 400
 
-if __name__ == '__main__':
+    users = load_item(USERS_FILE) or []
+    new_id = max([u['id'] for u in users], default=0) + 1
+    new_user = {"id": new_id, "name": data["name"]}
+    users.append(new_user)
+    save_item(USERS_FILE, users)
+
+    return jsonify(new_user), 200
+
+if __name__ == "__main__":
     app.run(port=get_host(USER_API_URL))
